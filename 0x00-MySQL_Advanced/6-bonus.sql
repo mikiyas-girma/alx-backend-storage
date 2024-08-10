@@ -3,17 +3,17 @@
 
 DELIMITER //
 
-CREATE PROCUDURE AddBonus(
+CREATE PROCEDURE AddBonus(
     IN user_id INT,
     IN project_name VARCHAR(255),
-    IN score FLOAT
+    IN score INT
 )
 BEGIN
+    DECLARE project_id INT;
+
     IF NOT EXISTS  (SELECT name FROM projects WHERE name=project_name) THEN
         INSERT INTO projects (name) VALUES (project_name);
     END IF;
-
-    DECLARE project_id INT;
 
     SELECT id INTO project_id
     FROM projects 
