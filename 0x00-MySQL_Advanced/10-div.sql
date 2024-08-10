@@ -10,12 +10,12 @@ CREATE FUNCTION SafeDiv(
 RETURNS FLOAT
 DETERMINISTIC
 BEGIN
-    DECLARE res FLOAT;
     IF b = 0 THEN
         RETURN 0;
-    ENDIF;
-    SET res = CAST( a / b AS FLOAT);
-    RETURN res;
+    END IF;
+
+    RETURN CAST(a AS FLOAT) / b;
 END //
+
 
 DELIMITER ;
