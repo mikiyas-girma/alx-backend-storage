@@ -14,7 +14,7 @@ BEGIN
         RETURN 0;
     END IF;
 
-    RETURN CAST(a AS FLOAT) / b;
+    RETURN a / b * 1.0;
 END //
 
 
