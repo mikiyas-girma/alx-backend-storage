@@ -11,16 +11,19 @@ BEGIN
     DECLARE weighted_score_sum FLOAT DEFAULT 0;
     DECLARE average_weighted_score FLOAT DEFAULT 0;
     
-    -- Calculate the sum of weights and the sum of weighted scores
-    SELECT 
-        SUM(p.weight) INTO total_weight,
-        SUM(c.score * p.weight) INTO weighted_score_sum
-    FROM 
-        corrections c
-    JOIN 
-        projects p ON c.project_id = p.id
-    WHERE 
-        c.user_id = user_id;
+    -- Calculate the sum of weights
+    SELECT SUM(p.weight) 
+    INTO total_weight
+    FROM corrections c
+    INNER JOIN projects p ON c.project_id = p.id
+    WHERE c.user_id = user_id;
+    
+    -- Calculate the sum of weighted scores
+    SELECT SUM(c.score * p.weight)
+    INTO weighted_score_sum
+    FROM corrections c
+    INNER JOIN projects p ON c.project_id = p.id
+    WHERE c.user_id = user_id;
     
     -- If total_weight is not 0, calculate the average weighted score
     IF total_weight > 0 THEN
@@ -37,4 +40,3 @@ BEGIN
 END //
 
 DELIMITER ;
-
