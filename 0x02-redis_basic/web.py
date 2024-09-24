@@ -8,7 +8,7 @@ from functools import wraps
 from typing import Callable
 
 
-redis_store = redis.Redis()
+redis = redis.Redis()
 
 
 def response_cacher(method: Callable) -> Callable:
@@ -20,14 +20,16 @@ def response_cacher(method: Callable) -> Callable:
         already there or if not caches the response for 10 sec and
         return response
         """
-        redis_store.incr(f'count:{url}')
-        result = redis_store.get(f'result:{url}')
-        if result:
-            return result.decode('utf-8')
-        result = method(url)
-        redis_store.set(f'count:{url}', 0)
-        redis_store.setex(f'result:{url}', 10, result)
-        return result
+        cache_data = redis.get(f'cached:{url}')
+        if cache_data:
+            return cache_data.decode('utf-8')
+
+        count_key = 'count:' + url
+        response = method(url)
+
+        redis.incr(count_key)
+        redis.setex(f'cached:{url}', 10, response)
+        return response
     return invoker
 
 
